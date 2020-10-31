@@ -1,0 +1,55 @@
+# https://dev.azure.com/openpeerpower
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - python/*
+schedules:
+- cron: "0 18 * * Mon"
+  displayName: Weekly build
+  branches:
+    include:
+    - master
+  always: true
+variables:
+  - name: versionHadolint
+    value: 'v1.18.0'
+  - group: docker
+
+stages:
+
+- stage: 'Validate'
+  jobs:
+  - template: templates/azp-job-lint-docker.yaml
+    parameters:
+      hadolintVersion: $(versionHadolint)
+
+- stage: 'Deploy'
+  jobs:
+  - job: 'CI_Azure'
+    condition: eq(variables['Build.SourceBranchName'], 'master')
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      matrix:
+        Python37:
+          pythonVersion: '3.7'
+        Python38:
+          pythonVersion: '3.8'
+        Python39:
+          pythonVersion: '3.9'
+    steps:
+    - script: sudo docker login -u $(dockerUser) -p $(dockerPassword)
+      displayName: 'Docker hub login'
+    - script: |
+        set -e
+
+        sudo docker build \
+          --tag openpeerpower/ci-azure:$(pythonVersion) \
+          -f python/Dockerfile-$(pythonVersion) \
+          python
+
+        sudo docker push openpeerpower/ci-azure:$(pythonVersion)

@@ -1,0 +1,28 @@
+# https://dev.azure.com/openpeerpower
+# Explicit Cache Save: Dont wait with cache save for all the other task in this job to complete (±30 minutes), other parallel jobs might utilize this
+
+parameters:
+  keyfile: ''
+  build: ''
+
+
+steps:
+- script: |
+    echo "##vso[task.setvariable variable=pythonCacheVersion]$(python --version)"
+  displayName: 'Set python version for requirement cache'
+- task: Cache@2
+  inputs:
+    key: ${{ parameters.keyfile }} | "$(pythonCacheVersion)"
+    path: $(Pipeline.Workspace)/venv
+    cacheHitVar: CacheRestored
+- script: |
+    ${{ parameters.build }}
+
+    mkdir -p $(Pipeline.Workspace)/venv
+    tar -czf $(Pipeline.Workspace)/venv/openpeerpower.tar.gz venv
+  displayName: 'Create Virtual Environment & Install Requirements'
+  condition: and(succeeded(), eq(variables['CacheRestored'], 'false'))
+- script: |
+    tar -xzf $(Pipeline.Workspace)/venv/openpeerpower.tar.gz
+  displayName: 'Restore Virtual Environment'
+  condition: and(succeeded(), eq(variables['CacheRestored'], 'true'))

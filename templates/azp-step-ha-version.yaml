@@ -1,0 +1,31 @@
+# https://dev.azure.com/openpeerpower
+
+parameters:
+  pythonVersion: '3.7'
+
+
+steps:
+- task: UsePythonVersion@0
+  displayName: 'Use Python ${{ parameters.pythonVersion }}'
+  inputs:
+    versionSpec: '${{ parameters.pythonVersion }}'
+- script: |
+    set -e
+
+    branch_version="$(Build.SourceBranchName)"
+
+    if [ "${branch_version}" == "dev" ]; then
+      python3 -m pip install packaging
+      python3 -m pip install .
+      python3 script/version_bump.py nightly
+    fi
+    version="$(python setup.py -V)"
+
+    echo "##vso[task.setvariable variable=homeassistantRelease]${version}"
+
+    if [[ "${branch_version}" =~ (b|d) ]]; then
+      echo "##vso[task.setvariable variable=homeassistantReleaseStable]false"
+    else
+      echo "##vso[task.setvariable variable=homeassistantReleaseStable]true"
+    fi
+  displayName: 'Check version & Bump on nightly'

@@ -1,0 +1,27 @@
+# https://dev.azure.com/openpeerpower
+
+
+steps:
+- script: |
+    set -e
+
+    branch_version="$(Build.SourceBranchName)"
+
+    if [[ "${branch_version}" == "main" ]]; then
+      commit_count="$(git rev-list --count --since=yesterday HEAD)"
+      calver_date="$(date "+%Y.%m.dev%d")"
+      commit_count="$(printf "%02d" ${commit_count})"
+      version="${calver_date}${commit_count}"
+    else
+      version="${branch_version}"
+    fi
+    sed -i "s/SUPERVISOR_VERSION .*/SUPERVISOR_VERSION = \"${version}\"/g" supervisor/const.py
+
+    echo "##vso[task.setvariable variable=supervisorRelease]${version}"
+
+    if [[ "${branch_version}" == "main" ]]; then
+      echo "##vso[task.setvariable variable=supervisorReleaseStable]false"
+    else
+      echo "##vso[task.setvariable variable=supervisorReleaseStable]true"
+    fi
+  displayName: 'Check version & Bump on dev'

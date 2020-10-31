@@ -1,0 +1,14 @@
+# https://dev.azure.com/openpeerpower
+
+parameters:
+  name: 'OpenPeerPower Azure'
+  email: 'hello@openpeerpower.io'
+
+steps:
+- checkout: self
+  persistCredentials: true
+  clean: true
+- script: |
+    git config --global user.name "${{ parameters.name }}"
+    git config --global user.email "${{ parameters.email }}"
+  displayName: 'Setup GIT'

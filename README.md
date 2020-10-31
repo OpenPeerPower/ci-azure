@@ -1,2 +1,2 @@
 # ci-azure
-Helper/Templates for Azure Pipelines
+Helper / Templates for Azure Pipelines
