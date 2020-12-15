@@ -4,7 +4,7 @@ parameters:
   - name: ignoreDev
     type: boolean
     default: false
-  - name: ignoreMaster
+  - name: ignoreMain
     type: boolean
     default: false
   - name: pythonVersion
@@ -26,10 +26,10 @@ jobs:
 
       if [ "${{ parameters.ignoreDev }}" == "True" ] && [ "${branch_version}" == "dev" ]; then
         exit 0
-      elif [ "${{ parameters.ignoreMaster }}" == "True" ] && [ "${branch_version}" == "master" ]; then
+      elif [ "${{ parameters.ignoreMain }}" == "True" ] && [ "${branch_version}" == "main" ]; then
         exit 0
       elif [ "${setup_version}" != "${branch_version}" ]; then
-        echo "Version of tag ${branch_version} don't match with ${setup_version}!"
+        echo "Version of tag ${branch_version} doesn't match with ${setup_version}!"
         exit 1
       fi
     displayName: 'Check version of branch/tag'
