@@ -161,6 +161,8 @@ jobs:
         openpeerpower/$(buildArch)-wheels:${{ parameters.builderVersion }} \
           --apk "${{ parameters.builderApk }}" \
           --pip "${{ parameters.builderPip }}" \
+          --signature $(wheelssignature) \
+          --github-token $(github-token) \
           --index-name $(wheelsIndex) \
           "${build_args[@]}"
 
