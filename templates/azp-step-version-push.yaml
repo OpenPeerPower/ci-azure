@@ -13,8 +13,8 @@ steps:
       sudo apt-get install -y --no-install-recommends \
         git jq curl
 
-      git config --global user.name "Pascal Vizeli"
-      git config --global user.email "pvizeli@syshack.ch"
+      git config --global user.name "Paul Caston"
+      git config --global user.email "paul@caston.id.au"
       git config --global credential.helper store
 
       echo "https://$(githubToken):x-oauth-basic@github.com" > $HOME/.git-credentials
@@ -23,8 +23,8 @@ steps:
 
       version="${{ parameters.buildVersion }}"
 
-      git clone https://github.com/openpeerpower/hassio-version
-      cd hassio-version
+      git clone https://github.com/openpeerpower/oppio-version
+      cd oppio-version
 
       dev_version="$(jq --raw-output '.${{ parameters.jsonTag }}' dev.json)"
       beta_version="$(jq --raw-output '.${{ parameters.jsonTag }}' beta.json)"

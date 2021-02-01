@@ -13,7 +13,7 @@ parameters:
   - aarch64
 - name: versionBuilder
   type: string
-  default: '7.2.0'
+  default: 'v2.0'
 
 jobs:
 

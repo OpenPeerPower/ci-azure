@@ -10,7 +10,7 @@ parameters:
   default: "amd64"
 - name: builderVersion
   type: string
-  default: "7.2.0"
+  default: 'v2.0'
 
 steps:
   - script: |
