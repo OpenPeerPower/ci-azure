@@ -3,7 +3,7 @@
 trigger:
   branches:
     include:
-    - master
+    - main
   paths:
     include:
     - python/*
@@ -12,7 +12,7 @@ schedules:
   displayName: Weekly build
   branches:
     include:
-    - master
+    - main
   always: true
 variables:
   - name: versionHadolint
@@ -30,7 +30,7 @@ stages:
 - stage: 'Deploy'
   jobs:
   - job: 'CI_Azure'
-    condition: eq(variables['Build.SourceBranchName'], 'master')
+    condition: eq(variables['Build.SourceBranchName'], 'main')
     pool:
       vmImage: 'ubuntu-latest'
     strategy:
