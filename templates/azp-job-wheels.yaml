@@ -96,12 +96,6 @@ jobs:
       sudo update-binfmts --enable qemu-aarch64
     displayName: 'Initial cross build'
   - script: |
-      mkdir -p .ssh
-      echo -e "-----BEGIN RSA PRIVATE KEY-----\n$(wheelsSSH)\n-----END RSA PRIVATE KEY-----" >> .ssh/id_rsa
-      ssh-keyscan -H $(wheelsHost) >> .ssh/known_hosts
-      chmod 600 .ssh/*
-    displayName: 'Install ssh key'
-  - script: |
       docker pull openpeerpower/$(buildArch)-wheels:${{ parameters.builderVersion }}
     displayName: 'Install wheels builder'
   - ${{ parameters.preBuild }}
